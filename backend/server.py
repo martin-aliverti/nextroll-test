@@ -153,7 +153,7 @@ def update_todo(id):
 
 
 @app.errorhandler(404)
-def not_found():
+def not_found(e):
     return "<h1>404</h1><p>The resource could not be found</p>", 404
 
 
