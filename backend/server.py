@@ -8,14 +8,16 @@ from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///todos.db"
 
 db = SQLAlchemy(app)
+
+CORS(app)
 
 
 def authenticate(username, password):
@@ -92,9 +94,11 @@ class Todo(db.Model):
 
 
 @app.route('/todos', methods=['GET'])
+@app.route('/todos/', methods=['GET'])
 @jwt_required
 def list_todo():
-    return jsonify(Todo.query.all()), 200
+    response = jsonify(Todo.query.all()), 200
+    return response
 
 
 @app.route('/todos/<id>', methods=['GET'])
