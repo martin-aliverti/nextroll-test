@@ -2,14 +2,14 @@ import React from "react";
 import { useTheme, Typography, CircularProgress } from "@material-ui/core";
 import { useAuth } from "../../hooks/useProvideAuth";
 
-export default ({ fields, actions, flipBackground }) => {
+export default ({ fields, actions }) => {
   const theme = useTheme();
   const { loading } = useAuth();
   return (
     <div
       style={{
         ...styles.container,
-        background: getBackground(theme, flipBackground),
+        background: getBackground(theme),
       }}
     >
       <div style={styles.contents}>
@@ -30,10 +30,8 @@ export default ({ fields, actions, flipBackground }) => {
   );
 };
 
-const getBackground = (theme, flipBackground) =>
-  flipBackground
-    ? `linear-gradient(${theme.palette.primary.light},${theme.palette.primary.main})`
-    : `linear-gradient(${theme.palette.primary.main},${theme.palette.primary.light})`;
+const getBackground = (theme) =>
+  `linear-gradient(${theme.palette.primary.main},${theme.palette.primary.light})`;
 
 const styles = {
   container: {
