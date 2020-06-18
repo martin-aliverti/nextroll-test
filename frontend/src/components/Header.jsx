@@ -9,16 +9,13 @@ import { useTheme } from "@material-ui/core";
 export default () => {
   const { signOut } = useAuth();
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   return (
     <div
       style={{

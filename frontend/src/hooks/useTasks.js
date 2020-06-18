@@ -17,8 +17,15 @@ const completedSamples = [
   {
     id: 1,
     text: "Kuala lumpur",
-    dueDate: moment(),
+    dueDate: moment().add(5, "days"),
     priority: 5,
+    completed: true,
+  },
+  {
+    id: 4,
+    text: "Astra task",
+    dueDate: moment(),
+    priority: 9,
     completed: true,
   },
 ];
@@ -26,15 +33,15 @@ const completedSamples = [
 const pendingSamples = [
   {
     id: 2,
-    text: "lalala",
+    text: "Zalala",
     dueDate: moment(),
-    priority: 1,
+    priority: 4,
     completed: false,
   },
   {
     id: 3,
-    text: "pepe porto",
-    dueDate: moment(),
+    text: "Ape porto",
+    dueDate: moment().add(8, "months"),
     priority: 2,
     completed: false,
   },
