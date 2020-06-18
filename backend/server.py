@@ -3,8 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
 from datetime import datetime
 from passlib.hash import pbkdf2_sha256
-from flask_jwt import JWT, jwt_required
 from decouple import config
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -21,13 +24,8 @@ def authenticate(username, password):
         return user
 
 
-def identity(payload):
-    user_id = payload['identity']
-    return User.query.get(user_id)
-
-
-app.config['SECRET_KEY'] = config('JWT_SECRET_KEY')
-jwt = JWT(app, authenticate, identity)
+app.config['JWT_SECRET_KEY'] = config('JWT_SECRET_KEY')
+jwt = JWTManager(app)
 
 
 @dataclass
@@ -59,6 +57,24 @@ def register():
         db.session.add(user)
         db.session.commit()
         return "OK", 201
+    else:
+        return bad_request()
+
+
+@app.route('/auth/login', methods=['POST'])
+def login():
+    data = request.json
+    if not data or not 'username' in data or not 'password' in data:
+        return bad_request()
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
+    if (not username or not password):
+        return bad_request()
+    user = authenticate(username, password)
+    if (user is not None):
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token), 200
+    return unauthorized()
 
 
 @dataclass
@@ -76,19 +92,19 @@ class Todo(db.Model):
 
 
 @app.route('/todos', methods=['GET'])
-@jwt_required()
+@jwt_required
 def list_todo():
     return jsonify(Todo.query.all()), 200
 
 
 @app.route('/todos/<id>', methods=['GET'])
-@jwt_required()
+@jwt_required
 def get_todo(id):
     return jsonify(Todo.query.get(id)), 200
 
 
 @app.route('/todos', methods=['POST'])
-@jwt_required()
+@jwt_required
 def create_todo():
     if not request.json or not 'text' in request.json or not 'due_date' in request.json:
         return bad_request()
@@ -105,7 +121,7 @@ def create_todo():
 
 
 @app.route('/todos/<id>', methods=['DELETE'])
-@jwt_required()
+@jwt_required
 def delete_todo(id):
     todo = Todo.query.get(id)
     if (todo is not None):
@@ -117,7 +133,7 @@ def delete_todo(id):
 
 
 @app.route('/todos/<id>', methods=['PUT'])
-@jwt_required()
+@jwt_required
 def update_todo(id):
     if not request.json:
         return bad_request()
@@ -144,6 +160,11 @@ def not_found():
 @app.errorhandler(400)
 def bad_request():
     return "<h1>400</h1><p>Bad request</p>", 400
+
+
+@app.errorhandler(401)
+def unauthorized():
+    return "<h1>401</h1><p>Unauthorized</p>", 401
 
 
 app.run()
