@@ -16,14 +16,14 @@ export const useTasks = () => useContext(tasksContext);
 const completedSamples = [
   {
     id: 1,
-    text: "Kuala lumpur",
+    text: "Set up authentication",
     dueDate: moment().add(5, "days"),
     priority: 5,
     completed: true,
   },
   {
     id: 4,
-    text: "Astra task",
+    text: "Configure nginx",
     dueDate: moment(),
     priority: 9,
     completed: true,
@@ -33,14 +33,14 @@ const completedSamples = [
 const pendingSamples = [
   {
     id: 2,
-    text: "Zalala",
+    text: "Responsive design",
     dueDate: moment(),
     priority: 4,
     completed: false,
   },
   {
     id: 3,
-    text: "Ape porto",
+    text: "enable https in future releases and this is a rather longer text",
     dueDate: moment().add(8, "months"),
     priority: 2,
     completed: false,

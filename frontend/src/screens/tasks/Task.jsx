@@ -21,10 +21,12 @@ export default ({ task }) => {
           <DeleteIcon />
         </IconButton>
       </div>
-      <Typography variant="h6">{task.text}</Typography>
-      <Divider />
-      <Typography>{`Due date: ${task.dueDate.format("LL")}`}</Typography>
-      <Typography>{`Priority: ${task.priority}`}</Typography>
+      <Typography variant="body1">{task.text}</Typography>
+      <Divider style={{ marginTop: 5, marginBottom: 5 }} />
+      <Typography variant="body2">{`Due date: ${task.dueDate.format(
+        "LL"
+      )}`}</Typography>
+      <Typography variant="body2">{`Priority: ${task.priority}`}</Typography>
       {!task.completed && (
         <Button
           color="primary"

@@ -7,8 +7,8 @@ export default () => {
 
   return (
     <div style={styles.container}>
-      <TaskList title="pending" tasks={pending} />
-      <TaskList title="completed" tasks={completed} />
+      <TaskList title="Pending" tasks={pending} />
+      <TaskList title="Completed" tasks={completed} />
     </div>
   );
 };
