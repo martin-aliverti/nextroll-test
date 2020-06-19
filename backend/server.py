@@ -117,13 +117,13 @@ def create_todo():
     todo = Todo(
         text=request.json['text'],
         due_date=datetime.strptime(
-            request.json['due_date'], '%Y-%m-%dT%H:%M:%SZ'),
+            request.json['due_date'], '%Y-%m-%dT%H:%M:%S.%f'),
     )
     if (request.json.get('priority', None) is not None):
         todo.priority = int(request.json['priority'])
     db.session.add(todo)
     db.session.commit()
-    return "OK", 201
+    return jsonify(todo), 201
 
 
 @app.route('/todos/<id>', methods=['DELETE'])
