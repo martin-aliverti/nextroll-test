@@ -88,11 +88,13 @@ class Todo(db.Model):
     text: str
     priority: int
     due_date: str
+    completed: bool
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(500))
     due_date = db.Column(db.DateTime)
     priority = db.Column(db.Integer, default=0)
+    completed = db.Column(db.Boolean, default=False)
     date_created = db.Column(db.DateTime, default=datetime.now)
 
 
@@ -133,7 +135,7 @@ def delete_todo(id):
     if (todo is not None):
         db.session.delete(todo)
         db.session.commit()
-        return "OK", 200
+        return "{}", 200
     else:
         return not_found(404)
 
@@ -149,11 +151,14 @@ def update_todo(id):
         if (request.json.get('text', None) is not None):
             todo.text = request.json['text']
         if (request.json.get('due_date', None) is not None):
-            todo.due_date = request.json['due_date']
+            todo.due_date = datetime.strptime(
+                request.json['due_date'], '%Y-%m-%dT%H:%M:%S.%f')
         if (request.json.get('priority', None) is not None):
             todo.priority = request.json['priority']
+        if (request.json.get('completed', None) is not None):
+            todo.completed = request.json['completed']
         db.session.commit()
-        return "OK", 200
+        return jsonify(todo), 200
     else:
         return not_found(404)
 
