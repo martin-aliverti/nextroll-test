@@ -13,7 +13,7 @@ export default () => {
       if (authenticate) {
         headers.Authorization = `Bearer ${token}`;
       }
-      const options = { method: "get" };
+      const options = { method: "get", headers };
       const response = await fetch(`${server_url}/${endpoint}`, options);
       if (response.status === 401) setToken(null);
       if (response.status !== 200) {
