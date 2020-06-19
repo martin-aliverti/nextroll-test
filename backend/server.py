@@ -11,6 +11,7 @@ from flask_jwt_extended import (
 from flask_cors import CORS
 
 app = Flask(__name__)
+app.config['CORS_HEADERS'] = 'Content-Type'
 CORS(app)
 app.config["DEBUG"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -97,7 +98,6 @@ class Todo(db.Model):
 
 
 @app.route('/todos', methods=['GET'])
-@app.route('/todos/', methods=['GET'])
 @jwt_required
 def list_todo():
     response = jsonify(Todo.query.all()), 200
