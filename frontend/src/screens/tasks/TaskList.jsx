@@ -73,7 +73,7 @@ export default ({ title, tasks }) => {
 
 const styles = {
   container: {
-    width: "100%",
+    width: 270,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

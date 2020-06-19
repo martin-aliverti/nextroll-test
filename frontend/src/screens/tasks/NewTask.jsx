@@ -14,11 +14,11 @@ export default () => {
   const { createTask } = useTasks();
   const [task, handleChange] = useForm({
     text: "",
-    priority: 0,
-    completed: false,
+    priority: "0",
   });
   const reset = () => {
     handleChange({ target: { value: "", name: "text" } });
+    handleChange({ target: { value: "0", name: "priority" } });
     setDate(moment());
     setCollapsed(true);
   };
@@ -66,23 +66,41 @@ const displayExpanded = ({
       name="text"
       multiline
     />
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <DatePicker
-        variant="inline"
-        format="yyyy/MM/dd"
-        margin="normal"
-        label={"Due date"}
-        value={date}
-        onChange={(newDate) => setDate(moment(newDate))}
-        minDate={moment()}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "baseline",
+      }}
+    >
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <DatePicker
+          variant="inline"
+          format="yyyy/MM/dd"
+          margin="normal"
+          label={"Due date"}
+          value={date}
+          onChange={(newDate) => setDate(moment(newDate))}
+          minDate={moment()}
+        />
+      </MuiPickersUtilsProvider>
+      <TextField
+        style={{ width: 40 }}
+        label="Priority"
+        name="priority"
+        value={task.priority}
+        onChange={handleChange}
+        type="number"
       />
-    </MuiPickersUtilsProvider>
+    </div>
     <Button
       color="primary"
       variant="contained"
       disableElevation
       style={{ alignSelf: "flex-end", marginTop: 10 }}
       onClick={create}
+      disabled={!task.text}
     >
       Add
     </Button>
