@@ -14,6 +14,14 @@ export default () => {
     priority: 0,
     completed: false,
   });
+  const reset = () => {
+    handleChange({ target: { value: "", name: "text" } });
+    setDate(moment());
+  };
+  const create = () => {
+    createTask({ ...task, dueDate: date });
+    reset();
+  };
   return (
     <div style={styles.container}>
       <TextField
@@ -39,7 +47,7 @@ export default () => {
         variant="contained"
         disableElevation
         style={{ alignSelf: "flex-end", marginTop: 10 }}
-        onClick={() => createTask({ ...task, due_date: date })}
+        onClick={create}
       >
         Add
       </Button>

@@ -1,5 +1,4 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
-import moment from "moment";
 import TasksService from "../services/TaskService";
 
 const tasksContext = createContext();
@@ -31,7 +30,10 @@ const useProvideTasks = () => {
   };
 
   const _createTask = async (task) => {
-    await createTask(task);
+    await createTask({
+      ...task,
+      due_date: task.dueDate.format("Y-M-DTH:m:s.SSS"),
+    });
     await _listTasks();
   };
 

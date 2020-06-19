@@ -23,7 +23,7 @@ const getBackground = (theme) =>
 
 const styles = {
   container: {
-    height: "100vh",
+    minHeight: "100vh",
     display: "flex",
     flex: 1,
     flexDirection: "column",
