@@ -11,11 +11,19 @@ export default () => {
       return tasks ? convertDates(tasks) : [];
     },
 
-    createTask: (task) => post(TASKS_ENDPOINT, task),
+    createTask: (task) =>
+      post(TASKS_ENDPOINT, {
+        ...task,
+        due_date: task.dueDate.format("Y-M-DTH:m:s.SSS"),
+      }),
 
     deleteTask: (task) => remove(`${TASKS_ENDPOINT}/${task.id}`),
 
-    updateTask: (task) => update(`${TASKS_ENDPOINT}/${task.id}`),
+    updateTask: (task) =>
+      update(`${TASKS_ENDPOINT}/${task.id}`, {
+        ...task,
+        due_date: task.dueDate.format("Y-M-DTH:m:s.SSS"),
+      }),
   };
 };
 

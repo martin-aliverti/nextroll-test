@@ -57,14 +57,14 @@ export default () => {
       return null;
     },
 
-    update: async (endpoint, authenticate = true) => {
+    update: async (endpoint, body, authenticate = true) => {
       const headers = {
         "Content-Type": "application/json",
       };
       if (authenticate) {
         headers.Authorization = `Bearer ${token}`;
       }
-      const options = { method: "put", headers };
+      const options = { method: "put", headers, body: JSON.stringify(body) };
       const response = await fetch(`${server_url}/${endpoint}`, options);
       if (response.status === 401) setToken(null);
       if (![200, 204].includes(response.status)) {

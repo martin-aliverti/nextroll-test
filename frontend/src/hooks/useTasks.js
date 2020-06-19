@@ -30,10 +30,7 @@ const useProvideTasks = () => {
   };
 
   const _createTask = async (task) => {
-    await createTask({
-      ...task,
-      due_date: task.dueDate.format("Y-M-DTH:m:s.SSS"),
-    });
+    await createTask(task);
     await _listTasks();
   };
 
@@ -43,7 +40,7 @@ const useProvideTasks = () => {
   };
 
   const completeTask = async (task) => {
-    await updateTask(task);
+    await updateTask({ ...task, completed: true });
     await _listTasks();
   };
 
