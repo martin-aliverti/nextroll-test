@@ -32,7 +32,6 @@ export default () => {
           value={date}
           onChange={(newDate) => setDate(moment(newDate))}
           minDate={moment()}
-          KeyboardButtonProps={{ "aria-label": "change date" }}
         />
       </MuiPickersUtilsProvider>
       <Button

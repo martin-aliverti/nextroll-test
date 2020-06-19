@@ -64,7 +64,7 @@ export default ({ title, tasks }) => {
         </Menu>
       </div>
       {orderedTasks.map((task) => (
-        <Task task={task} />
+        <Task key={`task_${task.id}`} task={task} />
       ))}
       <NewTask />
     </div>
