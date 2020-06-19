@@ -12,23 +12,22 @@ export default () => {
   const [collapsed, setCollapsed] = useState(true);
   const [date, setDate] = useState(moment());
   const { createTask } = useTasks();
-  const [task, handleChange] = useForm({
+  const [task, handleChange, reset] = useForm({
     text: "",
     priority: "0",
   });
-  const reset = () => {
-    handleChange({ target: { value: "", name: "text" } });
-    handleChange({ target: { value: "0", name: "priority" } });
+  const resetForm = () => {
+    reset();
     setDate(moment());
     setCollapsed(true);
   };
   const create = () => {
     createTask({ ...task, dueDate: date });
-    reset();
+    resetForm();
   };
   return collapsed
     ? displayCollapsed({ expand: () => setCollapsed(false) })
-    : displayExpanded({ task, date, setDate, handleChange, create, reset });
+    : displayExpanded({ task, date, setDate, handleChange, create, resetForm });
 };
 
 const displayCollapsed = ({ expand }) => (
@@ -48,14 +47,14 @@ const displayExpanded = ({
   setDate,
   handleChange,
   create,
-  reset,
+  resetForm,
 }) => (
   <div style={styles.container}>
     <IconButton
       style={{ alignSelf: "flex-end" }}
       size="small"
       color="primary"
-      onClick={reset}
+      onClick={resetForm}
     >
       <DeleteIcon />
     </IconButton>

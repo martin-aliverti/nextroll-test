@@ -10,5 +10,6 @@ export default (initialValues) => {
         [e.target.name]: e.target.value,
       });
     },
+    () => setValues(initialValues),
   ];
 };

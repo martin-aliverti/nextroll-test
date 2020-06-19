@@ -19,7 +19,7 @@ export default () => {
 };
 
 const getBackground = (theme) =>
-  `linear-gradient(${theme.palette.primary.main},${theme.palette.primary.light})`;
+  `linear-gradient(${theme.palette.primary.light},${theme.palette.primary.main})`;
 
 const styles = {
   container: {
