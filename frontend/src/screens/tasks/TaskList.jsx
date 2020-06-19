@@ -14,7 +14,7 @@ const ORDER_BY = {
 };
 
 const orderBy = (tasks, property) =>
-  tasks.sort((a, b) => (a[property] < b[property] ? -1 : 1));
+  [...tasks].sort((a, b) => (a[property] < b[property] ? -1 : 1));
 
 export default ({ title, tasks }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -35,6 +35,7 @@ export default ({ title, tasks }) => {
     handleClose();
     setOrderCriteria(criteria);
   };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
@@ -44,7 +45,6 @@ export default ({ title, tasks }) => {
         <IconButton size="small" color="secondary" onClick={handleClick}>
           <MenuIcon />
         </IconButton>
-
         <Menu
           id="simple-menu"
           anchorEl={anchorEl}
