@@ -1,14 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from passlib.hash import pbkdf2_sha256
 from decouple import config
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
-    get_jwt_identity
+    create_refresh_token, get_jwt_identity
 )
-from flask_cors import CORS
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -16,14 +15,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///todos.db"
 
 db = SQLAlchemy(app)
-
-CORS(app)
-
-
-def authenticate(username, password):
-    user = User.query.filter_by(username=username).first()
-    if user and pbkdf2_sha256.verify(password, user.password):
-        return user
 
 
 app.config['JWT_SECRET_KEY'] = config('JWT_SECRET_KEY')
@@ -48,7 +39,7 @@ class User(db.Model):
 def register():
     data = request.json
     if not data or not 'name' in data or not 'username' in data or not 'password' in data:
-        return bad_request()
+        return bad_request(400)
     user = User.query.filter_by(username=data['username']).first()
     if (not user):
         user = User(
@@ -60,23 +51,33 @@ def register():
         db.session.commit()
         return "OK", 201
     else:
-        return bad_request()
+        return bad_request(400)
 
 
 @app.route('/auth/login', methods=['POST'])
 def login():
     data = request.json
     if not data or not 'username' in data or not 'password' in data:
-        return bad_request()
+        return bad_request(400)
     username = request.json.get('username', None)
     password = request.json.get('password', None)
     if (not username or not password):
-        return bad_request()
+        return bad_request(400)
     user = authenticate(username, password)
     if (user is not None):
         access_token = create_access_token(identity=username)
-        return jsonify(access_token=access_token), 200
-    return unauthorized()
+        response = {
+            'access_token': create_access_token(identity=username, expires_delta=timedelta(minutes=60)),
+            'refresh_token': create_refresh_token(identity=username)
+        }
+        return jsonify(response), 200
+    return unauthorized(401)
+
+
+def authenticate(username, password):
+    user = User.query.filter_by(username=username).first()
+    if user and pbkdf2_sha256.verify(password, user.password):
+        return user
 
 
 @dataclass
@@ -111,7 +112,7 @@ def get_todo(id):
 @jwt_required
 def create_todo():
     if not request.json or not 'text' in request.json or not 'due_date' in request.json:
-        return bad_request()
+        return bad_request(400)
     todo = Todo(
         text=request.json['text'],
         due_date=datetime.strptime(
@@ -133,14 +134,14 @@ def delete_todo(id):
         db.session.commit()
         return "OK", 200
     else:
-        return not_found()
+        return not_found(404)
 
 
 @app.route('/todos/<id>', methods=['PUT'])
 @jwt_required
 def update_todo(id):
     if not request.json:
-        return bad_request()
+        return bad_request(400)
     todo = Todo.query.get(id)
     if (todo is not None):
         # TODO: refactor this, there must be a better way to validate
@@ -153,7 +154,7 @@ def update_todo(id):
         db.session.commit()
         return "OK", 200
     else:
-        return not_found()
+        return not_found(404)
 
 
 @app.errorhandler(404)
@@ -162,12 +163,12 @@ def not_found(e):
 
 
 @app.errorhandler(400)
-def bad_request():
+def bad_request(e):
     return "<h1>400</h1><p>Bad request</p>", 400
 
 
 @app.errorhandler(401)
-def unauthorized():
+def unauthorized(e):
     return "<h1>401</h1><p>Unauthorized</p>", 401
 
 
